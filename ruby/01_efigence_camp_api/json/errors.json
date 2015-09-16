@@ -1,0 +1,14 @@
+{
+  "errors": {
+    "name": [
+      "nie może być puste"
+    ],
+    "email": [
+      "nie może być puste",
+      "jest nieprawidłowe"
+    ],
+    "message": [
+      "nie może być puste"
+    ]
+  }
+}
