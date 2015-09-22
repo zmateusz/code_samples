@@ -6,4 +6,3 @@ unique = (integers) ->
       check[int] = 1
       result.push int
   result
-  
