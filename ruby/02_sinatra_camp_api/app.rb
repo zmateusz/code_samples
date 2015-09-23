@@ -1,17 +1,28 @@
 require 'sinatra'
+require "sinatra/reloader" if development?
 require 'json'
 
 set :bind, '0.0.0.0'
 
-before do
+before '/camp/api/*' do
   content_type :json, charset: 'utf-8'
+end
+
+helpers do
+  def read_file(page)
+    data = File.read("json/page#{page}.json")
+    data = JSON.parse(data, symbolize_names: false).to_json
+  end
+end
+
+error 500 do
+  "Server crashed for some " + env['sinatra.error'].message
 end
 
 # READ / index
 get '/camp/api/places' do
   begin
-    data = File.read("json/page#{params['page'] || 1}.json")
-    data = JSON.parse(data, symbolize_names: false).to_json
+    read_file(params['page'] || 1)
   rescue
     status 422
     "Unprocessable entity"
