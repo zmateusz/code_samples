@@ -11,22 +11,27 @@ end
 helpers do
   def read_file(page)
     data = File.read("json/page#{page}.json")
-    data = JSON.parse(data, symbolize_names: false).to_json
+    data = JSON.parse(data, symbolize_names: false)
   end
 
   def validate(name, email, message) 
+    blank_msg = "nie może być puste"
     errors = {}
-    errors[:name] = ["nie może być puste"] if name.nil? || name.empty?
+    errors[:name] = [blank_msg] if blank?(name)
     email_errors = []
-    email_errors << "nie może być puste" if email.nil? || email.empty?
+    email_errors << blank_msg if blank?(email)
     email_errors << "jest nieprawidłowe" if (email =~ /@/).nil?
     errors[:email] = email_errors if !email_errors.empty?
-    errors[:message] = ["nie może być puste"] if message.nil? || message.empty?
+    errors[:message] = [blank_msg] if blank?(message)
     if errors.empty?
       {name: name, email: email, message: message}
     else
       {errors: errors}
     end
+  end
+
+  def blank?(param)
+    param.nil? || param.empty?
   end
 end
 
@@ -37,7 +42,7 @@ end
 # READ / index
 get '/camp/api/places' do
   begin
-    read_file(params['page'] || 1)
+    read_file(params['page'] || 1).to_json
   rescue
     status 422
     "Unprocessable entity"
